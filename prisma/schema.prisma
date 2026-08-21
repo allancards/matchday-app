@@ -1,83 +1,83 @@
-// prisma/schema.prisma
-generator client {
-  provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client" 
-}
-
-
-datasource db {
-  provider = "postgresql"
+  // prisma/schema.prisma
+  generator client {
+    provider = "prisma-client-js"
+    output   = "../node_modules/.prisma/client" 
   }
 
-// Este é o Admin (você) - Autenticado via Google
-model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String   @unique
-  image     String?
-  createdAt DateTime @default(now())
 
-  events    Event[]  // Eventos criados por você
-}
+  datasource db {
+    provider = "postgresql"
+    }
 
-// ⭐ Jogador (NÃO tem login, é cadastrado pelo Admin)
-model Player {
-  id         String   @id @default(cuid())
-  name       String   // Nome do amigo
-  position   String // Goleiro, Zagueiro, etc.
-  photoUrl   String?  // Avatar opcional (UploadThing)
-  isActive   Boolean  @default(true) // Para esconder quem saiu do time
-  createdAt  DateTime @default(now())
+  // Este é o Admin (você) - Autenticado via Google
+  model User {
+    id        String   @id @default(cuid())
+    name      String?
+    email     String   @unique
+    image     String?
+    createdAt DateTime @default(now())
 
-  attendances Attendance[]
-  goals       Goal[]
-  assists     Goal[]        @relation("Assist")
-}
+    events    Event[]  // Eventos criados por você
+  }
 
-// Evento = A Pelada
-model Event {
-  id          String   @id @default(cuid())
-  title       String   // Ex: "Pelada do Domingo"
-  description String?  // "No campo do Zé, 16h"
-  date        DateTime // Quando vai rolar
-  location    String?  // Endereço
-  createdAt   DateTime @default(now())
+  // ⭐ Jogador (NÃO tem login, é cadastrado pelo Admin)
+  model Player {
+    id         String   @id @default(cuid())
+    name       String   // Nome do amigo
+    position   String // Goleiro, Zagueiro, etc.
+    photoUrl   String?  // Avatar opcional (UploadThing)
+    isActive   Boolean  @default(true) // Para esconder quem saiu do time
+    createdAt  DateTime @default(now())
 
-  createdById String   // Quem criou (User)
-  createdBy   User     @relation(fields: [createdById], references: [id])
+    attendances Attendance[]
+    goals       Goal[]
+    assists     Goal[]        @relation("Assist")
+  }
 
-  attendances Attendance[]
-  goals       Goal[]
-}
+  // Evento = A Pelada
+  model Event {
+    id          String   @id @default(cuid())
+    title       String   // Ex: "Pelada do Domingo"
+    description String?  // "No campo do Zé, 16h"
+    date        DateTime // Quando vai rolar
+    location    String?  // Endereço
+    createdAt   DateTime @default(now())
 
-// Confirmação de Presença
-model Attendance {
-  id        String   @id @default(cuid())
-  status    String   // GOING, NOT_GOING, MAYBE
-  createdAt DateTime @default(now())
+    createdById String   // Quem criou (User)
+    createdBy   User     @relation(fields: [createdById], references: [id])
 
-  eventId   String
-  event     Event    @relation(fields: [eventId], references: [id])
+    attendances Attendance[]
+    goals       Goal[]
+  }
 
-  playerId  String
-  player    Player   @relation(fields: [playerId], references: [id])
+  // Confirmação de Presença
+  model Attendance {
+    id        String   @id @default(cuid())
+    status    String   // GOING, NOT_GOING, MAYBE
+    createdAt DateTime @default(now())
 
-  @@unique([eventId, playerId]) // Um jogador só confirma 1x por evento
-}
+    eventId   String
+    event     Event    @relation(fields: [eventId], references: [id])
 
-// Gols marcados no dia
-model Goal {
-  id        String   @id @default(cuid())
-  minute    Int?     // Minuto do gol (opcional)
-  createdAt DateTime @default(now())
+    playerId  String
+    player    Player   @relation(fields: [playerId], references: [id])
 
-  eventId   String
-  event     Event    @relation(fields: [eventId], references: [id])
+    @@unique([eventId, playerId]) // Um jogador só confirma 1x por evento
+  }
 
-  playerId  String   // Quem fez o gol
-  player    Player   @relation(fields: [playerId], references: [id])
+  // Gols marcados no dia
+  model Goal {
+    id        String   @id @default(cuid())
+    minute    Int?     // Minuto do gol (opcional)
+    createdAt DateTime @default(now())
 
-  assistId  String?  // Quem deu a assistência (opcional)
-  assist    Player?  @relation("Assist", fields: [assistId], references: [id])
-}
+    eventId   String
+    event     Event    @relation(fields: [eventId], references: [id])
+
+    playerId  String   // Quem fez o gol
+    player    Player   @relation(fields: [playerId], references: [id])
+
+    assistId  String?  // Quem deu a assistência (opcional)
+    assist    Player?  @relation("Assist", fields: [assistId], references: [id])
+  }
 
