@@ -12,6 +12,7 @@ import AttendanceButton from "./_components/attendance-button";
 import GoalForm from "./_components/goal-form";
 import GoalList from "./_components/goal-list";
 
+
 export default async function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session) redirect("/sign-in");
@@ -90,7 +91,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                   key={player.id}
                   player={player}
                   eventId={event.id}
-                  currentStatus={status}
+                  currentStatus={status as "GOING" | "MAYBE" | "NOT_GOING"}
                 />
               );
             })}

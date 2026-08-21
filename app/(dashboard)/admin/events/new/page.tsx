@@ -5,17 +5,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { createEvent, EventFormData } from "@/app/actions/event";
 import { useRouter } from "next/navigation";
+import { SubmitHandler } from "react-hook-form";
 
 const formSchema = z.object({
   title: z.string().min(1, "Título é obrigatório"),
   description: z.string().optional(),
-  date: z.string().min(1, "Data é obrigatória"),
+  date: z.string().min(1, "Data obrigatória"), 
   location: z.string().optional(),
-});
+})
+
+type FormInputs = z.infer<typeof formSchema>;
+
 
 export default function NewEventPage() {
   const router = useRouter();
-  const form = useForm<EventFormData & { date: string }>({
+  const form = useForm<FormInputs>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
@@ -27,12 +31,23 @@ export default function NewEventPage() {
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = form;
 
-  async function onSubmit(data: EventFormData & { date: string }) {
-    await createEvent(data);
+
+  // 4. CORREÇÃO AQUI: A função onSubmit recebe os dados do formulário (com data em string)
+  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    // Se a sua API ou função externa precisa de um Date real, faça a conversão aqui dentro:
+    const dadosParaSalvar = {
+      ...data,
+      date: new Date(data.date), // Converte a string "2026-08-20" em um objeto Date
+    };
+
+    await createEvent(dadosParaSalvar);
     router.push("/admin/events");
     router.refresh();
-  }
+    
+    console.log(dadosParaSalvar);
+  };
 
+  
   return (
     <div className="max-w-md mx-auto">
       <h1 className="text-2xl font-bold mb-6">📅 Novo Evento</h1>

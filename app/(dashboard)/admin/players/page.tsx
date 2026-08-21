@@ -45,7 +45,7 @@ export default async function PlayersPage() {
             {players.map((player) => (
               <tr key={player.id}>
                 <td className="px-6 py-4 whitespace-nowrap font-medium">{player.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{positionLabels[player.position]}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{positionLabels[player.position as keyof typeof positionLabels]}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${player.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
                     {player.isActive ? "Ativo" : "Inativo"}
