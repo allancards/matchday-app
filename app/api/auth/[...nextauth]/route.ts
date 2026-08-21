@@ -1,15 +1,19 @@
-import Google from "next-auth/providers/google";
-import type { NextAuthConfig } from "next-auth";
-import { handlers } from "@/auth";
-export const { GET, POST } = handlers;
+import NextAuth from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import { prisma } from "@/lib/prisma"
 
-export const authConfig = {
-  providers: [Google],
-  callbacks: {
-    async session({ session, user }) {
-      session.user.id = user.id;
-      return session;
-    },
-  },
-  // Adicione callbacks ou páginas personalizadas aqui se necessário
-} satisfies NextAuthConfig;
+export const authOptions = {
+  adapter: PrismaAdapter(prisma),
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+  ],
+  secret: process.env.NEXTAUTH_SECRET,
+  // Opcional: callbacks para personalizar sessão
+}
+
+const handler = NextAuth(authOptions)
+export { handler as GET, handler as POST }
