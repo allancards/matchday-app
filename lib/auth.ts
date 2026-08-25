@@ -10,6 +10,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      checks:['none'],
     }),
   ],
   // Importante na v5 para não dar conflito de rotas padrão
