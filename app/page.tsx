@@ -64,7 +64,7 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/match/cmsjdea2b00051075kk7g1scq" className="w-full sm:w-auto">
+            <Link href="/match/cmt93gl2f000wjqesbr9aw9se" className="w-full sm:w-auto">
               <Button size="lg" className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold px-8 py-6 text-base rounded-xl shadow-xl shadow-emerald-500/20 gap-2">
                 Ver Demonstração
                 <ArrowRight className="w-5 h-5" />

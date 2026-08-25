@@ -7,13 +7,14 @@ import { auth } from "@/auth";
 
 // Schema para criar evento
 const eventSchema = z.object({
-  title: z.string().min(1, "Título é obrigatório"),
-  description: z.string().optional(),
-  date: z.string().transform((str) => new Date(str)), // espera string ISO
+  title: z.string().min(1),
+  description: z.string().optional(), 
+  // z.coerce.date() aceita tanto String de data quanto objeto Date e converte em Date
+  date: z.coerce.date(), 
   location: z.string().optional(),
 });
 
-export type EventFormData = z.infer<typeof eventSchema>;
+type EventFormData = z.infer<typeof eventSchema>;
 
 // Criar evento
 export async function createEvent(data: EventFormData) {
