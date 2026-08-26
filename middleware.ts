@@ -1,28 +1,32 @@
 // middleware.ts
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
+import NextAuth from "next-auth"
+import {authConfig} from "./auth.config"
+import { NextResponse } from "next/server"
 
-export async function middleware(req: NextRequest) {
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  const isLoggedIn = !!token;
-  const path = req.nextUrl.pathname;
+// O Auth.js gerencia o ciclo do middleware injetando o objeto `auth` automaticamente
+export const { auth: middleware } = NextAuth({
+  ...authConfig,
+  callbacks: {
+    authorized({ auth, request }) {
+      const isLoggedIn = !!auth?.user;
+      const path = request.nextUrl.pathname;
 
-  // Se não estiver logado e tentar acessar /admin -> vai para /sign-in
-  if (!isLoggedIn && path.startsWith("/admin")) {
-    return NextResponse.redirect(new URL("/sign-in", req.url));
-  }
+      // Se tentar acessar o admin sem estar logado -> manda para o sign-in
+      if (path.startsWith("/admin") && !isLoggedIn) {
+        return NextResponse.redirect(new URL("/sign-in", request.url));
+      }
 
-  // Se estiver logado e tentar acessar /sign-in -> vai para /admin
-  if (isLoggedIn && path.startsWith("/sign-in")) {
-    return NextResponse.redirect(new URL("/admin", req.url));
-  }
+      // Se já estiver logado e tentar ir pro sign-in -> manda de volta pro admin
+      if (path.startsWith("/sign-in") && isLoggedIn) {
+        return NextResponse.redirect(new URL("/admin", request.url));
+      }
 
-
-
-  return NextResponse.next();
-}
+      return true; // Permite o acesso a qualquer outra rota listada no matcher
+    },
+  },
+})
 
 export const config = {
+  // Mantém os seus matchers originais intactos
   matcher: ["/admin/:path*", "/sign-in"],
 };
