@@ -2,31 +2,30 @@
 import NextAuth from "next-auth"
 import {authConfig} from "./auth.config"
 import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
 
-// O Auth.js gerencia o ciclo do middleware injetando o objeto `auth` automaticamente
-export const { auth: middleware } = NextAuth({
-  ...authConfig,
-  callbacks: {
-    authorized({ auth, request }) {
-      const isLoggedIn = !!auth?.user;
-      const path = request.nextUrl.pathname;
+// 1. Inicializa o ambiente do Auth.js com a configuração leve
+const { auth } = NextAuth(authConfig)
 
-      // Se tentar acessar o admin sem estar logado -> manda para o sign-in
-      if (path.startsWith("/admin") && !isLoggedIn) {
-        return NextResponse.redirect(new URL("/sign-in", request.url));
-      }
+// 2. Exporta a função padrão com o nome estrito que o Next.js exige
+export default auth((req) => {
+  const isLoggedIn = !!req.auth; // O Auth.js injeta a sessão logada direto aqui
+  const path = req.nextUrl.pathname;
 
-      // Se já estiver logado e tentar ir pro sign-in -> manda de volta pro admin
-      if (path.startsWith("/sign-in") && isLoggedIn) {
-        return NextResponse.redirect(new URL("/admin", request.url));
-      }
+  // Se não estiver logado e tentar acessar /admin -> vai para /sign-in
+  if (!isLoggedIn && path.startsWith("/admin")) {
+    return NextResponse.redirect(new URL("/sign-in", req.url));
+  }
 
-      return true; // Permite o acesso a qualquer outra rota listada no matcher
-    },
-  },
+  // Se estiver logado e tentar acessar /sign-in -> vai para /admin
+  if (isLoggedIn && path.startsWith("/sign-in")) {
+    return NextResponse.redirect(new URL("/admin", req.url));
+  }
+
+  return NextResponse.next();
 })
 
 export const config = {
-  // Mantém os seus matchers originais intactos
+  // Mantém os seus matchers originais protegendo as rotas corretas
   matcher: ["/admin/:path*", "/sign-in"],
 };
