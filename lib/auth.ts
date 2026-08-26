@@ -6,6 +6,5 @@ import authConfig from "./auth.config" // Certifique-se de que o caminho está c
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt" }, // Obrigatório ao usar essa divisão para evitar travas no middleware
   ...authConfig,
 })
