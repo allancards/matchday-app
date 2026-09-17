@@ -127,28 +127,25 @@ pnpm prisma studio
 
 📜 Scripts disponíveis
 **Comando** | **Descrição**
-  --- | ---
-
-pnpm | dev |	Inicia o servidor de desenvolvimento
-pnpm | build |	Gera build de produção
-pnpm | start |	Inicia o servidor de produção
-pnpm | lint |	Executa o linter
-pnpm | prisma | ...	Comandos do Prisma
+|  --- | --- | 
+| pnpm | dev |	Inicia o servidor de desenvolvimento |
+| pnpm | build |	Gera build de produção |
+| pnpm | start |	Inicia o servidor de produção |
+| pnpm | lint |	Executa o linter |
+| pnpm | prisma | ...	Comandos do Prisma |
 
 
 🗺️ Rotas principais
 
 
-**Rota**  |	**Descrição**
-
---- | ---
-
-/sign-in |	Login com Google
-/admin |	Painel administrativo
-/admin/events |	Lista de eventos
-/admin/events/[id] |	Detalhes do evento
-/admin/events/[id]/draw |	Sorteio de times
-/admin/events/[id]/matchday |	Placar ao vivo
+|**Rota**  |	**Descrição**|
+|--- | --- |
+|/sign-in |	Login com Google|
+|/admin |	Painel administrativo|
+|/admin/events |	Lista de eventos|
+|/admin/events/[id] |	Detalhes do evento|
+|/admin/events/[id]/draw |	Sorteio de times|
+|/admin/events/[id]/matchday |	Placar ao vivo|
 
 🔄 Fluxo principal
 
