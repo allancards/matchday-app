@@ -1,7 +1,8 @@
 ⚽ MatchDay
 
 Plataforma para organizar partidas de futebol, confirmar presença, sortear times equilibrados e acompanhar o placar ao vivo.
- Funcionalidades
+
+  Funcionalidades
 
     Autenticação com Google (NextAuth)
 
